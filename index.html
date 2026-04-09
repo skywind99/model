@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>PC 정보 확인</title>
+    <style>
+        body { font-family: 맑은 고딕, sans-serif; text-align: center; padding: 50px; }
+        button { padding: 15px 30px; font-size: 18px; background: #0066ff; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        #result { margin-top: 30px; white-space: pre-wrap; text-align: left; max-width: 600px; margin: 30px auto; }
+    </style>
+</head>
+<body>
+    <h1>PC 정보 확인하기</h1>
+    <p>버튼을 누르면 가능한 정보를 수집해서 서버로 보냅니다.</p>
+    <button onclick="sendInfo()">정보 보내기</button>
+    <div id="result"></div>
+
+    <script>
+        async function sendInfo() {
+            const info = {
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                screen: `${screen.width} x ${screen.height}`,
+                cpuCores: navigator.hardwareConcurrency || '알 수 없음',
+                // 정확한 모델명은 불가능합니다.
+                note: "정확한 모델명은 브라우저에서 가져올 수 없습니다. .bat 파일을 사용해주세요."
+            };
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<strong>수집된 정보:</strong><br>${JSON.stringify(info, null, 2)}`;
+
+            // 서버로 보내기 (예시 - 실제 서버 주소로 바꾸세요)
+            try {
+                await fetch('https://your-server.com/api/save-pc-info', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(info)
+                });
+                alert('정보가 서버로 전송되었습니다!');
+            } catch(e) {
+                alert('서버 전송 실패 (테스트용으로는 로컬에서만 동작)');
+            }
+        }
+    </script>
+</body>
+</html>
